@@ -1,6 +1,29 @@
 _: pkgs:
 let
   packageOverrides = selfPythonPackages: pythonPackages: {
+    elm_kernel = pythonPackages.buildPythonPackage rec {
+      pname = "elm_kernel";
+      version = "0.2";
+
+      src = pythonPackages.fetchPypi {
+        inherit pname version;
+        sha256 = "0e6eba2c1028abd09a1ca218f331e732702dd266281dd228634fc8a6a1e3b38b";
+      };
+      preBuild = "export HOME=$TEMPDIR";
+      doCheck = false;
+      propagatedBuildInputs = [
+        pythonPackages.jupyter
+        (pkgs.elmPackages.elm.overrideAttrs (_: {
+              version = "0.18.0";
+              src = pkgs.fetchgit {
+                url = "https://github.com/elm/compiler";
+                sha256 = "09fmrbfpc1kzc3p9h79w57b9qjhajdswc4jfm9gyjw95vsiwasgh";
+                rev = "0.18.0";
+                fetchSubmodules = true;
+            };
+           }))
+        ];
+    };
 
     jupyterlab = pythonPackages.jupyterlab.overridePythonAttrs (_:{
       doCheck = false;

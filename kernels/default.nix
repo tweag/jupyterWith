@@ -12,4 +12,5 @@
   xeusCling = callPackage ./xeus-cling;
   iJavascript = callPackage ./ijavascript;
   gophernotes = callPackage ./gophernotes;
+  elmKernel = callPackage ./elm;
 }

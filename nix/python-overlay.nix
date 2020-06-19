@@ -60,6 +60,36 @@ let
         maintainers = [];
       };
     };
+
+    jupyter_postgres_kernel = pythonPackages.buildPythonPackage rec {
+      pname = "postgres_kernel";
+      version = "0.2.2";
+      doCheck = false;
+
+      src = pythonPackages.fetchPypi {
+        inherit pname version;
+        sha256 = "e7fd318baff171714d2810968bc50836100504a654381e9ce0d14da5e6639640";
+      };
+
+      postPatch = ''
+        substituteInPlace setup.py \
+        --replace "psycopg2>=2.6" "psycopg2>=2.7"
+        '';
+
+      propagatedBuildInputs = [
+        selfPythonPackages.jupyter_client
+        selfPythonPackages.ipykernel
+        pythonPackages.psycopg2
+        pythonPackages.tabulate
+      ];
+
+      meta = with pkgs.stdenv.lib; {
+        description = "A simple Jupyter kernel for PostgreSQL";
+        homepage = https://github.com/bgschiller/postgres_kernel;
+        license = licenses.mit;
+        maintainers = [];
+      };
+    };
   };
 
 in

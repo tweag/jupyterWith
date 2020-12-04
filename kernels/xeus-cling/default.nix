@@ -9,6 +9,8 @@
 , git
 , cmake
 , llvm
+, cppzmq
+, openssl
 , ncurses
 , zlib
 , zeromq
@@ -16,27 +18,30 @@
 , libuuid
 , pugixml
 , fetchgit
+, glibc
+, makeWrapper
+, extraFlag ? "c++17"
 , name ? "nixpkgs"
 , packages ? (_:[])
 }:
 
 let
-  cling = import ./cling.nix {inherit stdenv fetchurl python wget fetchFromGitHub libffi cacert git cmake llvm ncurses zlib fetchgit;};
-  xeusCling = import ./xeusCling.nix {inherit stdenv fetchFromGitHub cmake zeromq pkgconfig libuuid cling pugixml;};
+  cling = import ./cling.nix {inherit stdenv fetchurl python wget fetchFromGitHub libffi cacert git cmake llvm ncurses zlib fetchgit glibc makeWrapper;};
+  xeusCling = import ./xeusCling.nix {inherit stdenv fetchFromGitHub cmake zeromq pkgconfig libuuid cling pugixml llvm cppzmq openssl;};
 
   xeusClingSh = writeScriptBin "xeusCling" ''
     #! ${stdenv.shell}
     export PATH="${stdenv.lib.makeBinPath ([ xeusCling ])}:$PATH"
-    ${xeusCling}/bin/xeus-cling "$@"'';
+    ${xeusCling}/bin/xcpp -I ${glibc.dev}/include -I ${cling}/lib/clang/5.0.0/include "$@"'';
 
   kernelFile = {
-    display_name = "C++ - " + name;
-    language = "C++11";
+    display_name = extraFlag + name;
+    language = "C++17";
     argv = [
       "${xeusClingSh}/bin/xeusCling"
       "-f"
       "{connection_file}"
-      "-std=c++11"
+      "-std=${extraFlag}"
       ];
     logo64 = "logo-64x64.svg";
   };

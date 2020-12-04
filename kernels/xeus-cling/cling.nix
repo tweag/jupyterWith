@@ -52,6 +52,6 @@ stdenv.mkDerivation rec {
 
   postFixup = ''
     wrapProgram $out/bin/cling \
-    --add-flags "-I ${glibc.dev}/include"
+    --add-flags "-idirafter ${glibc.dev}/include"
       '';
 }

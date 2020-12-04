@@ -1,4 +1,4 @@
-  { stdenv
+{ stdenv
 , fetchFromGitHub
 , cmake
 , zeromq
@@ -9,20 +9,23 @@
 , llvm
 , cppzmq
 , openssl
+, glibc
+, cryptopp
+, makeWrapper
 }:
 let
   xtl = stdenv.mkDerivation {
     name = "xtl";
     src = fetchFromGitHub {
-      owner = "QuantStack";
+      owner = "xtensor-stack";
       repo = "xtl";
-      rev = "01be49d75867ee99d48bf061a913f98e12fc6704";
-      sha256 = "0xy040b4b5a39kxqnj7r0bm64ic13szrli8ik95xvfh26ljh8c7q";
+      rev = "8406defd0ff3a33bc28e7122f48e6768722606d8";
+      sha256 = "sha256-U4LJPGni2+Rr1V/+PiwQtkLt4w1R7LL0d5SADHtMDnc=";
     };
     buildInputs = [ cmake ];
     buildPhase = ''
-          cmake
-          '';
+    cmake
+    '';
   };
 
   nlohmannJson = stdenv.mkDerivation {
@@ -30,15 +33,10 @@ let
     src = fetchFromGitHub {
       owner = "nlohmann";
       repo = "json";
-      rev = "e89c946451cfdb7392b12bc6c3674b548ea5c0ee";
-      sha256 = "16rgp9rgdza82zcbh9r9i7k2yblkz2fd3ig64035fny2p6pxw6lm";
+      rev = "eaac91803441a43562562c7dc9ef328beaeb505a";
+      sha256 = "sha256-WlMqUtajHuwsnelesMu/7ij9KKb5bjuL6JKNx3g24M0=";
     };
     buildInputs = [ cmake ];
-    buildPhase = ''
-          pwd
-          ls -la
-          cmake
-          '';
   };
 
   cxxopts = stdenv.mkDerivation {
@@ -46,57 +44,10 @@ let
     src = fetchFromGitHub {
       owner = "jarro2783";
       repo = "cxxopts";
-      rev = "9990f73845d76106063536d7cd630ac15cb4a065";
-      sha256 = "0hhw52plq7nyh1v040h1afw0kaq8rha7hvwyw8nnyyvb9kbnkqqs";
+      rev = "66b52e6cc9f3f2429dcb01ddb90b6c2f156ac67f";
+      sha256 = "sha256-E31P7hhzk+reUD2+fo5oiPXLHIfW5vbOOxP94Fd3aMk=";
     };
     buildInputs = [ cmake ];
-  };
-
-  cryptopp = stdenv.mkDerivation rec {
-    name = "crypto++-${version}";
-    majorVersion = "8.0";
-    version = "${majorVersion}.0";
-    
-    src = fetchFromGitHub {
-      owner = "weidai11";
-      repo = "cryptopp";
-      rev = "CRYPTOPP_8_0_0";
-      sha256 = "135p1qqzrrvkkc33y8j328pp3b6grnwka9sps77pdidrqy333bws";
-    };
-    
-    configurePhase = let
-      marchflags =
-        if stdenv.isi686 then "-march=i686" else
-          if stdenv.isx86_64 then "-march=nocona -mtune=generic" else
-            "";
-    in
-      ''
-          sed -i GNUmakefile \
-            -e 's|-march=native|${marchflags} -fPIC|g' \
-            -e '/^CXXFLAGS =/s|-g ||'
-        '';
-    
-    enableParallelBuilding = true;
-    
-    makeFlags = [ "PREFIX=$(out)" ];
-    buildFlags = [ "libcryptopp.so" "libcryptopp.pc" ];
-    installFlags = [ "LDCONF=true" ];
-    
-    doCheck = true;
-    checkPhase = "LD_LIBRARY_PATH=`pwd` make test";
-    
-    # prefer -fPIC and .so to .a; cryptotest.exe seems superfluous
-    postInstall = ''
-        ln -sf "$out"/lib/libcryptopp.so.${version} "$out"/lib/libcryptopp.so.${majorVersion}
-      '';
-    
-    meta = with stdenv.lib; {
-      description = "Crypto++, a free C++ class library of cryptographic schemes";
-      homepage = http://cryptopp.com/;
-      license = licenses.boost;
-      platforms = platforms.all;
-      maintainers = [ ];
-    };
   };
 
   xeus = stdenv.mkDerivation {
@@ -112,11 +63,12 @@ let
                     cppzmq
                     cryptopp nlohmannJson xtl pkgconfig libuuid openssl ];
 
+
     configurePhase = ''
-          mkdir build
-          cd build
-          cmake -DBUILD_EXAMPLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$out ..
-          '';
+     mkdir build
+     cd build
+     cmake -DBUILD_EXAMPLES=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$out ..
+     '';
   };
 
   xeusCling = stdenv.mkDerivation {
@@ -130,13 +82,23 @@ let
 
     buildInputs = [ cmake zeromq
                     cppzmq
-                    xeus libuuid xtl pkgconfig cling pugixml cxxopts nlohmannJson llvm openssl ];
+                    xeus libuuid xtl pkgconfig cling pugixml cxxopts nlohmannJson llvm openssl makeWrapper ];
 
     cmakeFlags = [
       "-DCMAKE_BUILD_TYPE=Release"
       "-DCMAKE_INSTALL_PREFIX=$out"
       "-DLLVM_BINARY_DIR=${cling}"
     ];
+
+    postFixup = ''
+    wrapProgram $out/bin/xcpp \
+    --add-flags "-idirafter ${glibc.dev}/include" \
+    --add-flags "-idirafter ${nlohmannJson}/include" \
+    --add-flags "-idirafter ${xtl}/include" \
+    --add-flags "-idirafter ${cling}/include" \
+    --add-flags "-idirafter ${cxxopts}/include" \
+    --add-flags "-idirafter ${llvm}/include"
+      '';
   };
 in
 xeusCling

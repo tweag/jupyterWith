@@ -15,7 +15,7 @@ let
   python3 = pkgs.python3Packages;
 
   # Default configuration.
-  defaultDirectory = "${python3.jupyterlab}/share/jupyter/lab";
+  defaultDirectory = "$out/share/jupyter/lab";
   defaultKernels = [ (kernels.iPythonWith {}) ];
   defaultExtraPackages = p: [];
   defaultExtraInputsFrom = p: [];

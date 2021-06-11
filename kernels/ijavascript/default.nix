@@ -7,7 +7,7 @@ let
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
-    export PATH="${stdenv.lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
+    export PATH="${lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
     ${iJavascriptEnv}/lib/node_modules/ijavascript/lib/kernel.js "$@"
   '';
 

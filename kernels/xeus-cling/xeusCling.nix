@@ -98,7 +98,7 @@ let
         ln -sf "$out"/lib/libcryptopp.so.${version} "$out"/lib/libcryptopp.so.${majorVersion}
       '';
     
-      meta = with stdenv.lib; {
+      meta = with lib; {
         description = "Crypto++, a free C++ class library of cryptographic schemes";
         homepage = http://cryptopp.com/;
         license = licenses.boost;

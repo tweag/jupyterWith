@@ -26,7 +26,7 @@ let
 
   xeusClingSh = writeScriptBin "xeusCling" ''
     #! ${stdenv.shell}
-    export PATH="${stdenv.lib.makeBinPath ([ xeusCling ])}:$PATH"
+    export PATH="${lib.makeBinPath ([ xeusCling ])}:$PATH"
     ${xeusCling}/bin/xeus-cling "$@"'';
 
   kernelFile = {

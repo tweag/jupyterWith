@@ -1,6 +1,7 @@
 { writeScriptBin
 , haskellPackages
 , stdenv
+, lib
 , customIHaskell ? null
 , extraIHaskellFlags ? ""
 , name ? "nixpkgs"
@@ -27,7 +28,7 @@ let
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ghcEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${stdenv.lib.makeBinPath ([ ghcEnv ])}:$PATH"
+    export PATH="${lib.makeBinPath ([ ghcEnv ])}:$PATH"
     ${ihaskell}/bin/ihaskell ${extraIHaskellFlags} -l $(${ghcEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {

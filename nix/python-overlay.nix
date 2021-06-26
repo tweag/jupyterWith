@@ -6,9 +6,6 @@ let
       doCheck = false;
     });
 
-    nbconvert = pythonPackages.nbconvert.overridePythonAttrs (_:{
-      doCheck = false;
-    });
 
     jupyter_contrib_core = pythonPackages.buildPythonPackage rec {
       pname = "jupyter_contrib_core";

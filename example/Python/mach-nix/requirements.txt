@@ -1,0 +1,5 @@
+pandas
+seaborn
+geopandas
+Shapely
+scikit-learn

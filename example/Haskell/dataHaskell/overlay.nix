@@ -9,16 +9,16 @@ let
   };
 
   overrides = _: hspkgs: {
-      vinyl_0_10_0 = hspkgs.vinyl_0_10_0_1;
-      singletons = dontCheck (hspkgs.callHackage "singletons" "2.4.1" {});
-      th-desugar = hspkgs.callHackage "th-desugar" "1.8" {};
-      datasets = hspkgs.callHackage "datasets" "0.4.0" {};
-      streaming-cassava = dontCheck (hspkgs.callHackage "streaming-cassava" "0.1.0.1" {});
-      Frames = hspkgs.callHackage "Frames" "0.5.1" {};
-      htoml = hspkgs.callHackage "htoml" "1.0.0.2" {};
-      vinyl = dontCheck (hspkgs.callHackage "vinyl" "0.10.0.1" {});
-      dh-core = dontCheck (hspkgs.callCabal2nix "dh-core" "${dataHaskellCoreSrc}/dh-core" {});
-      analyze = dontCheck (hspkgs.callCabal2nix "analyze" "${dataHaskellCoreSrc}/analyze" {});
+    vinyl_0_10_0 = hspkgs.vinyl_0_10_0_1;
+    singletons = dontCheck (hspkgs.callHackage "singletons" "2.4.1" { });
+    th-desugar = hspkgs.callHackage "th-desugar" "1.8" { };
+    datasets = hspkgs.callHackage "datasets" "0.4.0" { };
+    streaming-cassava = dontCheck (hspkgs.callHackage "streaming-cassava" "0.1.0.1" { });
+    Frames = hspkgs.callHackage "Frames" "0.5.1" { };
+    htoml = hspkgs.callHackage "htoml" "1.0.0.2" { };
+    vinyl = dontCheck (hspkgs.callHackage "vinyl" "0.10.0.1" { });
+    dh-core = dontCheck (hspkgs.callCabal2nix "dh-core" "${dataHaskellCoreSrc}/dh-core" { });
+    analyze = dontCheck (hspkgs.callCabal2nix "analyze" "${dataHaskellCoreSrc}/analyze" { });
 
   };
 in
@@ -26,7 +26,7 @@ in
   haskellPackages = pkgs.haskellPackages.override (old: {
     overrides =
       pkgs.lib.composeExtensions
-        (old.overrides or (_:_: {}))
+        (old.overrides or (_:_: { }))
         overrides;
   });
 }

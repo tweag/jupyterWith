@@ -1,14 +1,13 @@
-{ overlays ? []
-, config ? {}
+{ overlays ? [ (import ./nix/python-overlay.nix) ]
+, config ? { }
 , pkgs ? import ./nix { inherit config overlays; }
 }:
 
 with (import ./lib/directory.nix { inherit pkgs; });
 with (import ./lib/docker.nix { inherit pkgs; });
-
 let
   # Kernel generators.
-  kernels = pkgs.callPackage ./kernels {};
+  kernels = pkgs.callPackage ./kernels { };
   kernelsString = pkgs.lib.concatMapStringsSep ":" (k: "${k.spec}");
 
   # Python version setup.
@@ -16,17 +15,17 @@ let
 
   # Default configuration.
   defaultDirectory = "${python3.jupyterlab}/share/jupyter/lab";
-  defaultKernels = [ (kernels.iPythonWith {}) ];
-  defaultExtraPackages = p: [];
-  defaultExtraInputsFrom = p: [];
+  defaultKernels = [ (kernels.iPythonWith { }) ];
+  defaultExtraPackages = p: [ ];
+  defaultExtraInputsFrom = p: [ ];
 
   # JupyterLab with the appropriate kernel and directory setup.
-  jupyterlabWith = {
-    directory ? defaultDirectory,
-    kernels ? defaultKernels,
-    extraPackages ? defaultExtraPackages,
-    extraInputsFrom ? defaultExtraInputsFrom,
-    extraJupyterPath ? _: ""
+  jupyterlabWith =
+    { directory ? defaultDirectory
+    , kernels ? defaultKernels
+    , extraPackages ? defaultExtraPackages
+    , extraInputsFrom ? defaultExtraInputsFrom
+    , extraJupyterPath ? _: ""
     }:
     let
       # PYTHONPATH setup for JupyterLab
@@ -62,15 +61,16 @@ let
         '';
       };
     in
-      jupyterlab.override (oldAttrs: {
-        passthru = oldAttrs.passthru or {} // { inherit env; };
-      });
+    jupyterlab.override (oldAttrs: {
+      passthru = oldAttrs.passthru or { } // { inherit env; };
+    });
 in
-  { inherit
-      jupyterlabWith
-      kernels
-      mkBuildExtension
-      mkDirectoryWith
-      mkDirectoryFromLockFile
-      mkDockerImage;
-  }
+{
+  inherit
+    jupyterlabWith
+    kernels
+    mkBuildExtension
+    mkDirectoryWith
+    mkDirectoryFromLockFile
+    mkDockerImage;
+}

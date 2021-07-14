@@ -5,9 +5,8 @@
 , nix
 , writeScriptBin
 }:
-
 let
-  nix-kernel = callPackage ./nix-kernel {};
+  nix-kernel = callPackage ./nix-kernel { };
   kernelEnv = (python3.withPackages (p: (with p; [
     nix-kernel
   ])
@@ -24,11 +23,11 @@ let
     logo64 = "logo-64x64.png";
   };
 
-  nix-bin =  writeScriptBin "nix-kernel" ''
-      #! ${stdenv.shell}
-      PATH=${nix}/bin/:${kernelEnv}/bin:$PATH
-      exec python -m nix-kernel $@
-        '';
+  nix-bin = writeScriptBin "nix-kernel" ''
+    #! ${stdenv.shell}
+    PATH=${nix}/bin/:${kernelEnv}/bin:$PATH
+    exec python -m nix-kernel $@
+  '';
 
   iNixKernel = stdenv.mkDerivation {
     name = "inix-${name}";
@@ -41,8 +40,8 @@ let
     '';
   };
 in
-  {
-    spec = iNixKernel;
-    runtimePackages = [
-    ];
-  }
+{
+  spec = iNixKernel;
+  runtimePackages = [
+  ];
+}

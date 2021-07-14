@@ -2,16 +2,16 @@
 , python3
 , stdenv
 , name ? "nixpkgs"
-, packages ? (_:[])
+, packages ? (_: [ ])
 }:
 let
   iRubyEnv = bundlerApp {
-      pname = "iruby";
-      gemdir = ./gemdir;
-      exes = [ "iruby" ];
-    };
+    pname = "iruby";
+    gemdir = ./gemdir;
+    exes = [ "iruby" ];
+  };
 
-  pythonEnv = python3.withPackages (p: with p; [ jupyter ipykernel ] );
+  pythonEnv = python3.withPackages (p: with p; [ jupyter ipykernel ]);
 
   kernelFile = {
     display_name = "IRuby - ${name}";
@@ -35,7 +35,7 @@ let
     '';
   };
 in
-  {
-    spec = irubyKernel;
-    runtimePackages = [];
-  }
+{
+  spec = irubyKernel;
+  runtimePackages = [ ];
+}

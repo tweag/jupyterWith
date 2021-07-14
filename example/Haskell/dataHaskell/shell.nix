@@ -1,20 +1,20 @@
 let
   jupyterLibPath = ../../..;
   nixpkgsPath = jupyterLibPath + "/nix";
-  pkgs = import nixpkgsPath {};
+  pkgs = import nixpkgsPath { };
   jupyter = import jupyterLibPath {
     overlays = [ (import ./overlay.nix) ];
   };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      name = "dataHaskell";
-      packages = p: with p; [
-        dh-core
-        datasets
-        analyze
-        Frames
-      ];
-    };
+    name = "dataHaskell";
+    packages = p: with p; [
+      dh-core
+      datasets
+      analyze
+      Frames
+    ];
+  };
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
@@ -26,4 +26,4 @@ let
       };
     };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

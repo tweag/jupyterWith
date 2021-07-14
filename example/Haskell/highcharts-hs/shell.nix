@@ -11,36 +11,38 @@ let
     {
       haskellPackages = pkgs.haskellPackages.override (old: {
         overrides = pkgs.lib.composeExtensions old.overrides
-            (self: hspkgs: {
-              highcharts = hspkgs.callCabal2nix "highcharts" "${highchartsSrc}/highcharts" {};
-              highcharts-gen = hspkgs.callCabal2nix "highcharts-gen" "${highchartsSrc}/highcharts-gen" {};
-              js-qq = hspkgs.callCabal2nix "js-qq" "${highchartsSrc}/js-qq" {};
-              highcharts-types = hspkgs.callCabal2nix "highcharts-types" (pkgs.runCommand "foo"
-                          { buildInputs = [ self.highcharts-gen ];}
-                          "highcharts-gen ${highchartsSrc}/highcharts-gen/tree.json $out") {};
-            });
+          (self: hspkgs: {
+            highcharts = hspkgs.callCabal2nix "highcharts" "${highchartsSrc}/highcharts" { };
+            highcharts-gen = hspkgs.callCabal2nix "highcharts-gen" "${highchartsSrc}/highcharts-gen" { };
+            js-qq = hspkgs.callCabal2nix "js-qq" "${highchartsSrc}/js-qq" { };
+            highcharts-types = hspkgs.callCabal2nix "highcharts-types"
+              (pkgs.runCommand "foo"
+                { buildInputs = [ self.highcharts-gen ]; }
+                "highcharts-gen ${highchartsSrc}/highcharts-gen/tree.json $out")
+              { };
           });
-      }
-    );
+      });
+    }
+  );
 
   jupyterLibPath = ../../..;
-  jupyter = import jupyterLibPath { overlays= [ overlay ]; };
+  jupyter = import jupyterLibPath { overlays = [ overlay ]; };
 
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      #extraIHaskellFlags = "--debug";
-      name = "highcharts";
-      packages = p: with p; [
-        highcharts
-        highcharts-types
-        js-qq
-        highcharts-gen
-      ];
-    };
+    #extraIHaskellFlags = "--debug";
+    name = "highcharts";
+    packages = p: with p; [
+      highcharts
+      highcharts-types
+      js-qq
+      highcharts-gen
+    ];
+  };
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
       kernels = [ ihaskellWithPackages ];
     };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

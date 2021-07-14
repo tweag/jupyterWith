@@ -1,6 +1,6 @@
 let
   jupyterLibPath = ../../..;
-  jupyter = import jupyterLibPath {};
+  jupyter = import jupyterLibPath { };
 
   iPythonWithPackages = jupyter.kernels.iPythonWith {
     name = "local-package";
@@ -12,12 +12,12 @@ let
           src = ./my-python-package;
         };
       in
-        [ myPythonPackage ];
+      [ myPythonPackage ];
   };
 
   jupyterlabWithKernels = jupyter.jupyterlabWith {
     kernels = [ iPythonWithPackages ];
-    extraPackages = p: [p.hello];
+    extraPackages = p: [ p.hello ];
   };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

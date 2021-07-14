@@ -1,17 +1,17 @@
 let
   jupyterLibPath = ../../..;
   nixpkgsPath = jupyterLibPath + "/nix";
-  jupyter = import jupyterLibPath {};
-  pkgs = import nixpkgsPath {};
+  jupyter = import jupyterLibPath { };
+  pkgs = import nixpkgsPath { };
   dontCheck = pkgs.haskell.lib.dontCheck;
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      #extraIHaskellFlags = "--debug";
-      name = "Funflow";
-      packages = p: [
-        (dontCheck (p.callHackage "funflow" "1.5.0" {}))
-      ];
-    };
+    #extraIHaskellFlags = "--debug";
+    name = "Funflow";
+    packages = p: [
+      (dontCheck (p.callHackage "funflow" "1.5.0" { }))
+    ];
+  };
 
   ihaskell_labextension = import ../ihaskell_labextension.nix { inherit jupyter pkgs; };
 
@@ -25,4 +25,4 @@ let
       };
     };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

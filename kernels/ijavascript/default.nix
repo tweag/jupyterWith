@@ -1,13 +1,12 @@
 { stdenv, callPackage, writeScriptBin, name ? "default" }:
-
 let
-  nodePackages = callPackage ./ijavascript-node {};
+  nodePackages = callPackage ./ijavascript-node { };
 
   iJavascriptEnv = nodePackages."ijavascript-5.2.0";
 
   iJavascriptSh = writeScriptBin "ijavascript" ''
     #! ${stdenv.shell}
-    export PATH="${stdenv.lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
+    export PATH="${lib.makeBinPath ([ iJavascriptEnv ])}:$PATH"
     ${iJavascriptEnv}/lib/node_modules/ijavascript/lib/kernel.js "$@"
   '';
 
@@ -33,7 +32,7 @@ let
     '';
   };
 in
-  {
-    spec = iJavascriptKernel;
-    runtimePackages = [];
-  }
+{
+  spec = iJavascriptKernel;
+  runtimePackages = [ ];
+}

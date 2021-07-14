@@ -1,6 +1,6 @@
 { stdenv
 , name ? "nixpkgs"
-, packages ? []
+, packages ? [ ]
 , callPackage
 , evcxr
 , writeScriptBin
@@ -8,7 +8,6 @@
 , gcc
 , binutils-unwrapped
 }:
-
 let
   kernelFile = {
     display_name = "Rust - ${name}";
@@ -35,7 +34,7 @@ let
     '';
   };
 in
-  {
-    spec = RustKernel;
-    runtimePackages = [ cargo gcc binutils-unwrapped ] ++ packages;
-  }
+{
+  spec = RustKernel;
+  runtimePackages = [ cargo gcc binutils-unwrapped ] ++ packages;
+}

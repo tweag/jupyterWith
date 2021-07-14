@@ -18,5 +18,5 @@ python3Packages.buildPythonPackage rec {
   preBuild = ''
     export HOME=$(pwd)
   '';
-  propagatedBuildInputs = with python3Packages; [ pexpect notebook ] ;
+  propagatedBuildInputs = with python3Packages; [ pexpect notebook ];
 }

@@ -2,11 +2,10 @@
 , rWrapper
 , rPackages
 , name ? "nixpkgs"
-, packages ? (_:[])
+, packages ? (_: [ ])
 }:
-
 let
-  kernelEnv = rWrapper.override{ packages =  (packages rPackages)  ++ [ rPackages.IRkernel ]; };
+  kernelEnv = rWrapper.override { packages = (packages rPackages) ++ [ rPackages.IRkernel ]; };
 
   kernelFile = {
     argv = [
@@ -26,7 +25,7 @@ let
     name = "IRkernel";
     phases = "installPhase";
     src = ./ir.svg;
-    buildInputs = [];
+    buildInputs = [ ];
     installPhase = ''
       mkdir -p $out/kernels/ir_${name}
       cp $src $out/kernels/ir_${name}/logo-64x64.svg
@@ -34,7 +33,7 @@ let
     '';
   };
 in
-  {
-    spec = IRkernel;
-    runtimePackages = [];
-  }
+{
+  spec = IRkernel;
+  runtimePackages = [ ];
+}

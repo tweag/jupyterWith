@@ -2,11 +2,10 @@
 , python3
 , name ? "nixpkgs"
 }:
-
 let
   kernelEnv =
-    ( python3.withPackages
-        (p: [ p.ansible-kernel p.ansible ])
+    (python3.withPackages
+      (p: [ p.ansible-kernel p.ansible ])
     ).override (args: { ignoreCollisions = true; });
 
   kernelFile = {
@@ -27,7 +26,7 @@ let
     name = "ansible-kernel";
     phases = "installPhase";
     src = ./ansible.png;
-    buildInputs = [];
+    buildInputs = [ ];
     installPhase = ''
       mkdir -p $out/kernels/ansible_${name}
       cp $src $out/kernels/ansible_${name}/logo-64x64.png
@@ -35,7 +34,7 @@ let
     '';
   };
 in
-  {
-    spec = ansibleKernel;
-    runtimePackages = [ python3.pkgs.ansible ];
-  }
+{
+  spec = ansibleKernel;
+  runtimePackages = [ python3.pkgs.ansible ];
+}

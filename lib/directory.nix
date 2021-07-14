@@ -1,9 +1,7 @@
 { pkgs }:
-
 let
   jupyter = pkgs.python3Packages.jupyterlab;
 in
-
 {
   generateDirectory = pkgs.writeScriptBin "generate-directory" ''
     if [ $# -eq 0 ]
@@ -18,7 +16,7 @@ in
         # consider that it comes from a folder without read access only as in
         # Nix
         mkdir -p "$DIRECTORY"/staging
-        cp ${jupyter}/lib/python3.7/site-packages/jupyterlab/staging/yarn.lock "$DIRECTORY"/staging
+        cp ${jupyter}/${pkgs.python3.sitePackages}/jupyterlab/staging/yarn.lock "$DIRECTORY"/staging
         chmod +w "$DIRECTORY"/staging/yarn.lock
 
         for EXT in "$@"; do echo "- $EXT"; done
@@ -36,7 +34,7 @@ in
         WORKDIR="lockfiles"
 
         mkdir -p "$DIRECTORY"/staging
-        cp ${jupyter}/lib/python3.7/site-packages/jupyterlab/staging/yarn.lock "$DIRECTORY"/staging
+        cp ${jupyter}/${pkgs.python3.sitePackages}/jupyterlab/staging/yarn.lock "$DIRECTORY"/staging
         chmod +w "$DIRECTORY"/staging/yarn.lock
 
         echo "Generating lockfiles for extensions:"
@@ -64,14 +62,14 @@ in
 
       npm install
       npm run build
-      '';
+    '';
     installPhase = ''
       mkdir -p $out/
       cp -r * $out/
-      '';
+    '';
   };
 
-  mkDirectoryFromLockFile = { yarnlock, packagefile, extensions ? [], sha256 }:
+  mkDirectoryFromLockFile = { yarnlock, packagefile, extensions ? [ ], sha256 }:
     let
       # Should this exist?
       copyExtension = { name, version }: ''
@@ -103,7 +101,7 @@ in
         # Copy the default JupyterLab folder to the build location and give
         # write permissions to it.
         mkdir -p $FOLDER
-        cp -R ${jupyter}/lib/python3.7/site-packages/jupyterlab/* $FOLDER
+        cp -R ${jupyter}/${pkgs.python3.sitePackages}/jupyterlab/* $FOLDER
         chmod -R +rw $FOLDER
 
         # Overwrite yarn.lock and package.json with the ones that we want. Make
@@ -154,7 +152,7 @@ in
         export HOME=$TMP
 
         mkdir -p appdir/staging
-        cp ${jupyter}/lib/python3.7/site-packages/jupyterlab/staging/yarn.lock appdir/staging
+        cp ${jupyter}/${pkgs.python3.sitePackages}/jupyterlab/staging/yarn.lock appdir/staging
         chmod +w appdir/staging/yarn.lock
 
         jupyter labextension install ${extStr} --app-dir=appdir --debug

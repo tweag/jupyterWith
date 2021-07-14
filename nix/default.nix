@@ -1,5 +1,4 @@
-{ config ? {}, overlays ? [] }:
-
+{ config ? { }, overlays ? [ ] }:
 let
   defaultOverlays = [
     (import ./haskell-overlay.nix)
@@ -7,4 +6,4 @@ let
   ];
   overlaysAll = defaultOverlays ++ overlays;
 in
-  import ./nixpkgs.nix { inherit config; overlays=overlaysAll; }
+import ./nixpkgs.nix { inherit config; overlays = overlaysAll; }

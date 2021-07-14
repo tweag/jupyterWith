@@ -1,17 +1,16 @@
 { python3
 , stdenv
 , name ? "nixpkgs"
-, packages ? (_:[])
+, packages ? (_: [ ])
 , writeScriptBin
 , ignoreCollisions ? false
 }:
-
 let
   kernelEnv = (python3.withPackages (p:
     packages p ++ (with p; [
       ipykernel
     ])
-  )).override (args: { inherit ignoreCollisions;});
+  )).override (args: { inherit ignoreCollisions; });
 
   kernelFile = {
     display_name = "Python3 - ${name}";
@@ -41,10 +40,10 @@ let
     '';
   };
 in
-  {
-    spec = ipythonKernel;
-    runtimePackages = [
-      # Lets the user to use libraries from the Python command.
-      pythonBin
-    ];
-  }
+{
+  spec = ipythonKernel;
+  runtimePackages = [
+    # Lets the user to use libraries from the Python command.
+    pythonBin
+  ];
+}

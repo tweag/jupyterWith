@@ -5,12 +5,12 @@ let
   };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      name = "Frames";
-      packages = p: with p; [
-        foldl
-        Frames
-      ];
-    };
+    name = "Frames";
+    packages = p: with p; [
+      foldl
+      Frames
+    ];
+  };
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
@@ -22,4 +22,4 @@ let
       };
     };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

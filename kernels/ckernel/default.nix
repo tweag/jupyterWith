@@ -1,10 +1,9 @@
 { stdenv
 , python3
 , name ? "nixpkgs"
-, packages ? p: []
+, packages ? p: [ ]
 , pkgs
 }:
-
 let
   kernelEnv = python3.withPackages (p: [ p.jupyter_c_kernel ]);
 
@@ -25,7 +24,7 @@ let
     name = "c-kernel";
     phases = "installPhase";
     src = ./c.png;
-    buildInputs = [];
+    buildInputs = [ ];
     installPhase = ''
       mkdir -p $out/kernels/c_${name}
       cp $src $out/kernels/c_${name}/logo-64x64.png
@@ -33,7 +32,7 @@ let
     '';
   };
 in
-  {
-    spec = cKernel;
-    runtimePackages = packages pkgs;
-  }
+{
+  spec = cKernel;
+  runtimePackages = packages pkgs;
+}

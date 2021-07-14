@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
     sha256 = "0yls35vyfcb14wghryss9xsin4cbpgkqckg72czh5jd2w0vjcmbx";
   };
 
-  srcs = [clingSrc llvmSrc clangSrc];
+  srcs = [ clingSrc llvmSrc clangSrc ];
 
   unpackCmd = ''
     mkdir -p ./all
@@ -35,7 +35,7 @@ stdenv.mkDerivation rec {
     fi
   '';
 
-  buildInputs = [python wget cacert git cmake llvm libffi];
+  buildInputs = [ python wget cacert git cmake llvm libffi ];
   propagatedBuildInputs = [ ncurses zlib ];
   configurePhase = "true";
 

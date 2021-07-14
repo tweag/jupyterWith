@@ -2,7 +2,7 @@ let
   jupyterLib = ../../..;
   nixpkgsPath = jupyterLib + "/nix";
 
-  pkgs = import nixpkgsPath {};
+  pkgs = import nixpkgsPath { };
 
   monadBayesSrc = pkgs.fetchFromGitHub {
     owner = "adscib";
@@ -20,33 +20,33 @@ let
 
   haskellPackages = pkgs.haskellPackages.override (old: {
     overrides = pkgs.lib.composeExtensions old.overrides
-        (self: hspkgs: {
-          monad-bayes = hspkgs.callCabal2nix "monad-bayes" "${monadBayesSrc}" {};
-          hvega = hspkgs.callCabal2nix "hvega" "${hVegaSrc}/hvega" {};
-          ihaskell-hvega = hspkgs.callCabal2nix "ihaskell-hvega" "${hVegaSrc}/ihaskell-hvega" {};
-        });
+      (self: hspkgs: {
+        monad-bayes = hspkgs.callCabal2nix "monad-bayes" "${monadBayesSrc}" { };
+        hvega = hspkgs.callCabal2nix "hvega" "${hVegaSrc}/hvega" { };
+        ihaskell-hvega = hspkgs.callCabal2nix "ihaskell-hvega" "${hVegaSrc}/ihaskell-hvega" { };
       });
+  });
 
-  jupyter = import jupyterLib { pkgs=pkgs; };
+  jupyter = import jupyterLib { pkgs = pkgs; };
 
   ihaskellWithPackages = jupyter.kernels.iHaskellWith {
-      #extraIHaskellFlags = "--debug";
-      haskellPackages=haskellPackages;
-      name = "bayes-monad";
-      packages = p: with p; [
-        matrix
-        hmatrix
-        monad-bayes
-        hvega
-        statistics 
-        vector
-        ihaskell-hvega
-        aeson
-        aeson-pretty
-        formatting
-        foldl
-      ];
-    };
+    #extraIHaskellFlags = "--debug";
+    haskellPackages = haskellPackages;
+    name = "bayes-monad";
+    packages = p: with p; [
+      matrix
+      hmatrix
+      monad-bayes
+      hvega
+      statistics
+      vector
+      ihaskell-hvega
+      aeson
+      aeson-pretty
+      formatting
+      foldl
+    ];
+  };
 
   jupyterlabWithKernels =
     jupyter.jupyterlabWith {
@@ -58,4 +58,4 @@ let
       };
     };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

@@ -1,5 +1,4 @@
 # This file tests the overlay interface to JupyterWith.
-
 let
   # Path to the JupyterWith folder.
   jupyterWithPath = builtins.fetchGit {
@@ -23,7 +22,6 @@ let
   jupyter = pkgs.jupyterWith;
 
   jupyterEnvironment =
-    jupyter.jupyterlabWith {
-    };
+    jupyter.jupyterlabWith { };
 in
-  jupyterEnvironment.env
+jupyterEnvironment.env

@@ -2,9 +2,8 @@
 , rWrapper
 , rPackages
 , name ? "nixpkgs"
-, packages ? (_:[])
+, packages ? (_: [ ])
 }:
-
 let
   kernelEnv = rWrapper.override {
     packages = (packages rPackages) ++ [ rPackages.JuniperKernel ];
@@ -28,7 +27,7 @@ let
     name = "juniper";
     phases = "installPhase";
     src = ./juniper.png;
-    buildInputs = [];
+    buildInputs = [ ];
     installPhase = ''
       mkdir -p $out/kernels/juniper_${name}
       cp $src $out/kernels/juniper_${name}/logo-64x64.png
@@ -36,7 +35,7 @@ let
     '';
   };
 in
-  {
-    spec = jKernel;
-    runtimePackages = [];
-  }
+{
+  spec = jKernel;
+  runtimePackages = [ ];
+}

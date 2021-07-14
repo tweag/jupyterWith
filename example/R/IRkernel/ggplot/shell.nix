@@ -1,6 +1,6 @@
 let
   jupyterLibPath = ../../../..;
-  jupyter = import jupyterLibPath {};
+  jupyter = import jupyterLibPath { };
 
   jupyterlabWithKernels = jupyter.jupyterlabWith {
     kernels = [
@@ -11,4 +11,4 @@ let
     ];
   };
 in
-  jupyterlabWithKernels.env
+jupyterlabWithKernels.env

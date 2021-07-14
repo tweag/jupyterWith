@@ -1,10 +1,10 @@
 { writeScriptBin
 , stdenv
+, lib
 , buildGoModule
 , fetchFromGitHub
 , name ? "nixpkgs"
 }:
-
 let
   # gophernotes is available in a newer version of the nixpkgs. Thus, this
   # package might be used after bumping those.
@@ -24,7 +24,7 @@ let
 
   gophernotesSh = writeScriptBin "gophernotes" ''
     #! ${stdenv.shell}
-    export PATH="${stdenv.lib.makeBinPath ([ gophernotes ])}:$PATH"
+    export PATH="${lib.makeBinPath ([ gophernotes ])}:$PATH"
     ${gophernotes}/bin/gophernotes "$@"'';
 
   kernelFile = {
@@ -49,7 +49,7 @@ let
     '';
   };
 in
-  {
-    spec = gophernotesKernel;
-    runtimePackages = [];
-  }
+{
+  spec = gophernotesKernel;
+  runtimePackages = [ ];
+}

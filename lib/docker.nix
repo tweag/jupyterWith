@@ -17,10 +17,10 @@
         CMD = [ "/bin/jupyter-lab" "--ip=0.0.0.0" "--no-browser" "--allow-root" ];
         WorkingDir = "/data";
         ExposedPorts = {
-          "8888" = {};
+          "8888" = { };
         };
         Volumes = {
-          "/data" = {};
+          "/data" = { };
         };
       };
     };
